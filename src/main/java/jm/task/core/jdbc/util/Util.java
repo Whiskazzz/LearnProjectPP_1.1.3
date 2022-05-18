@@ -6,14 +6,12 @@ import java.sql.*;
 public class Util {
     public static final String URL = "jdbc:mysql://localhost:3306/pp";
     public static final String USERNAME = "root";
-    public static final String PASSWORD = "****";
+    public static final String PASSWORD = "8912541004889125428676xb;brvjkjltw";
     private static Connection connection;
-    private static Statement statement;
-    public static Statement getStatement() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         if (connection == null) {
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            statement = connection.createStatement();
         }
-        return statement;
+        return connection;
     }
 }
