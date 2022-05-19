@@ -14,7 +14,8 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        try (Session session = Util.getSessionFactory().getCurrentSession()) {
+        Session session = Util.getSessionFactory().getCurrentSession();
+        try {
             session.beginTransaction();
             session.createSQLQuery("""
                     CREATE TABLE IF NOT EXISTS `pp`.`users` (
@@ -25,56 +26,87 @@ public class UserDaoHibernateImpl implements UserDao {
                       PRIMARY KEY (`id`),
                       UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)""").executeUpdate();
             session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
 
     }
 
     @Override
     public void dropUsersTable() {
-        try (Session session = Util.getSessionFactory().getCurrentSession()) {
+        Session session = Util.getSessionFactory().getCurrentSession();
+        try {
             session.beginTransaction();
             session.createSQLQuery("DROP TABLE IF EXISTS users;").executeUpdate();
             session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
 
     }
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        try (Session session = Util.getSessionFactory().getCurrentSession()) {
+        Session session = Util.getSessionFactory().getCurrentSession();
+        try {
             session.beginTransaction();
             User user = new User(name, lastName, age);
             session.save(user);
             session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
     }
 
     @Override
     public void removeUserById(long id) {
-        try (Session session = Util.getSessionFactory().getCurrentSession()) {
+        Session session = Util.getSessionFactory().getCurrentSession();
+        try  {
             session.beginTransaction();
             session.createQuery("delete User where id = :param1").setParameter("param1",id).executeUpdate();
             session.getTransaction().commit();
+        }  catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
 
     }
 
     @Override
     public List<User> getAllUsers() {
-        try (Session session = Util.getSessionFactory().getCurrentSession()) {
+        Session session = Util.getSessionFactory().getCurrentSession();
+        try {
             session.beginTransaction();
             List<User> in = session.createQuery("from User").getResultList();
             session.getTransaction().commit();
             return in;
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
+        return null;
     }
 
     @Override
     public void cleanUsersTable() {
-        try (Session session = Util.getSessionFactory().getCurrentSession()) {
+        Session session = Util.getSessionFactory().getCurrentSession();
+        try  {
             session.beginTransaction();
             session.createQuery("delete User").executeUpdate();
             session.getTransaction().commit();
+            session.getTransaction().getStatus();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
 
     }
